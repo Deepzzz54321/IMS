@@ -2,9 +2,37 @@ from django.db import models
 
 # Create your models here.
 class Rooms(models.Model):
+    BRANCH = (
+        ('CSE','CSE'),
+        ('ECE','ECE'),
+        ('EEE','EEE'),
+        ('BIOTECH','BIOTECH'),
+        ('MECH','MECH'),
+        ('CIVIL','CIVIL'),
+        ('MME','MME'),
+        ('CHEM','CHEM'),
+        ('SHM', 'SHM'),
+        ('SOS','SOS'),
+        ('Administration Section', 'Administration Section'),
+        ('Admissions Section', 'Admissions Section'),
+        ('Exam Section', 'Exam Section'),
+        ('T&P Cell', 'T&P Cell'),
+        ('Research Cell', 'Research Cell'),
+        ('Planning & Development Section', 'Planning & Development Section'),
+        ('Student Affairs Section', 'Student Affairs Section'),
+        ('Financial Section', 'Financial Section'),
+        ('Inventory Section', 'Inventory Section'),
+        ('Sales & Purchases Section', 'Sales & Purchases Section'),
+        ('Medical Section', 'Medical Section'),
+        ('Boys Hostels','Boys Hostels'),
+        ('Girls Hostels', 'Girls Hostels'),
+
+    )
+
     room_id = models.CharField(primary_key=True, max_length=15, null=False)
-    name = models.CharField(max_length=50, null=False),
+    name = models.CharField(max_length=50, null=False)
     requirements = models.TextField(null=True, blank=True)
+    branch = models.CharField(max_length=100,choices=BRANCH, null=False)
 
 class Employees(models.Model):
     BRANCH = (
