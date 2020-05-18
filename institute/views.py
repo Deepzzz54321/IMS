@@ -6,4 +6,4 @@ from institute.models import Employees
 def official_home(request):
     username = request.COOKIES['username']
     user = Employees.objects.get(emp_id=username)
-    return HttpResponse('<h1>'+user+'</h1>')
+    return HttpResponse('<h1>'+user +'</h1>')

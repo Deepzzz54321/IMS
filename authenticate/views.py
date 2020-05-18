@@ -11,6 +11,11 @@ from inventorydb.settings import EMAIL_HOST_USER
 
 # Create your views here.
 def login(request):
+
+    if request.COOKIES.get('username'):
+        response = render(request, 'authenticate/login.html')
+        response.delete_cookie('username')
+        return response    
     
     if request.method == 'POST':
         user = request.POST["username"]
@@ -28,6 +33,12 @@ def login(request):
 
 @csrf_exempt
 def signup(request):
+
+    if request.COOKIES.get('username'):
+        response = render(request, 'authenticate/SignUp1.html')
+        response.delete_cookie('username')
+        return response  
+    
     if request.method == 'POST':
         regno = request.POST["regno"]
         password1 = request.POST["pass"]
