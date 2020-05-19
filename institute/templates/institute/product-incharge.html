@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="author" content="Creative Tim">
-  <title>Unmet Requirements - Head</title>
+  <title>Products - Incharge</title>
   {% load static %}
   <!-- Favicon -->
   <link rel="icon" href=" {% static 'institute/assets/img/brand/favicon.png' %}" type="image/png">
@@ -41,15 +41,15 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link active" href="{% url 'institute:unmet_require' %}">
+              <a class="nav-link" href="{% url 'institute:unmet_require' %}">
                 <i class="ni ni-planet text-orange"></i>
                 <span class="nav-link-text">Unmet Requirements</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link " href="{% url 'institute:maintainence' %}">
+              <a class="nav-link" href="{% url 'institute:maintainence' %}">
                 <i class="ni ni-settings text-info"></i>
-                <span class="nav-link-text">Maintainence Products</span>
+                <span class="nav-link-text">Maintenance Products</span>
               </a>
             </li>
             <li class="nav-item">
@@ -59,7 +59,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'institute:products' %}">
+              <a class="nav-link adtive" href="{% url 'institute:products' %}">
                 <i class="fas fa-list text-primary"></i>
                 <span class="nav-link-text">Products</span>
               </a>
@@ -82,7 +82,7 @@
                 <span class="nav-link-text">Tables</span>
               </a>
             </li>
-
+          </ul>
 
 
         </div>
@@ -111,7 +111,7 @@
 
           <!-- Welcome Message -->
           <div class="d-md-inline-block d-none text-white ml-3">
-            Hello <span class="text-white font-weight-bolder">{{user.name}}</span>, {{user.designation}} of {{user.branch}}
+            Hello <span class="text-white font-weight-bolder">{{user.name}}</span>, {{user.designation}} of {% if room %} {{room.name}} {% else %} {{user.branch}}{% endif %}
           </div>
           <ul class="navbar-nav align-items-center  ml-auto">
             <li class="nav-item dropdown">
@@ -145,66 +145,110 @@
       </div>
     </nav>
 
-
     <!-- Page content -->
     <div class="container-fluid mt--5">
       <div class="card bg">
             <div class="card-header border-0">
-              <h3 class="mb-0">Unmet Requirements</h3>
-            </div>
+                <div class="row">
+                  <div class="col">
+                  <h3 class="mb-0">Products {% if room %} of {{room.name}} {% endif %}</h3>
+                  </div>
+                  <div class="col d-flex justify-content-end">
+                  <div class="form-group mb-0  ">
+                    <div class="input-group input-group-alternative input-group-merge ">
+                      <div class="input-group-prepend ">
+                        <span class="input-group-text bg-default text-info"><i class="fas fa-search"></i></span>
+                      </div>
+                      <input class="form-control bg-default text-info" type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for Products...">
+                    </div>
+                  </div>
+                  </div>
+                </div>
+              </div>
             <div class="table-responsive">
               <!-- Projects table -->
-              <table class="table align-items-center table-flush">
+              <table class="table align-items-center table-flush" id="myTable">
                 <thead class="thead-light">
                   <tr>
-                    <th scope="col">Room ID</th>
-                    <th scope="col">Room Name</th>
+                    <th scope="col">Product ID</th>
+                    <th scope="col">Product Name</th>
                     <th scope="col">Product Type</th>
                     <th scope="col">Product Specification</th>
-                    <th scope="col">Product Count</th>
-                    <th scope="col">Product In Stock</th>
-                    <th scope="col">Allot/Request</th>
+                    <th scope="col">Product Status</th>
+                    <th scope="col">Product Maintenance History</th>
                   </tr>
                 </thead>
                 <tbody>
-                <form action=" {% url 'institute:unmet_require' %} " method="post">
-                  {% for item in unmet_requirements %}
+                  <form action="{% url 'institute:products' %}" method="post">
+                  {% for item in product_det %}
                     <tr>
-                      <td>{{item.room_id}} </td>
-                      <td>{{item.room_name}} </td>
-                      <td>{{item.product_type}} </td>
-                      <td>{{item.product_spec}} </td>
-                      <td>{{item.product_count}} </td>
-                      <td>{{item.stock_count}} </td>
-                      
-                      {% if item.stock_count == 0 %}
-                        <td> Request: <input type="radio" name="R{{item.require_id}}" id="R{{item.require_id}}" value="request" ondblclick="this.checked = false"> </td>
-                        
-                      {% else %}
-                        <td> Allot: <input type="radio" name="A{{item.require_id}}" id="A{{item.require_id}}" value="allot" ondblclick="this.checked = false"> </td>
-                      {% endif %}
-                    </tr>
-                    
-                    {% empty %}
-                    <tr>
-                      <td colspan="7" class="text-md-center text-warning">
-                        Yay! All room requirements have been satisfied.
+                      <td>{{item.prod_id}} </td>
+                      <td>{{item.name}} </td>
+                      <td>{{item.type}} </td>
+                      <td>{{item.specs}} </td>
+                      <td>
+                        <select class="form-control" name="{{item.prod_id}}" id="{{item.prod_id}}">
+                          <option id="S1" value="Usable">Usable</option>
+                          <option id="S2" value="Maintenance">Maintenance</option>
+                          <option id="S3" value="Unusable">Unusable</option>
+                        </select>
+
+                        <script>
+                          var value = "{{item.status}}"
+                          console.log(value);
+                          
+                          if(value == 'Usable'){
+                            document.getElementById('S1').selected= true
+                          }else if(value == 'Maintenance'){
+                            document.getElementById('S2').selected= true
+                          }else if(value == 'Unusable'){
+                            document.getElementById('S3').selected= true
+                          }
+                        </script>
                       </td>
+                      <td >{{item.update|linebreaksbr}}</td>
                     </tr>
                     
-                    {% endfor %}
+                  {% empty %}
+                    <tr>
+                      <td colspan="6" class="text-center text-warning">The Room has not been alloted any items</td>
+                    </tr>
                     
-                    {% if unmet_requirements|length > 0 %}
-                      <tr>
-                        <td colspan="7" class="text-md-center">
-                          <input type="submit" value="Submit" class="btn btn-primary">
-                        </td>
-                      </tr>
-                    {% endif %}
-                   
-                </form>        
+                  {% endfor %}
+                  {% if product_det|length > 0 %}
+                  <tr>
+                    <td colspan="7" class="text-md-center">
+                      <input type="submit" value="Submit" class="btn btn-primary">
+                    </td>
+                  </tr>
+                  {% endif %}
+                  </form>   
                 </tbody>
               </table>
+              
+              <script>
+                function myFunction() {
+                  // Declare variables
+                  var input, filter, table, tr, td, i, txtValue;
+                  input = document.getElementById("myInput");
+                  filter = input.value.toUpperCase();
+                  table = document.getElementById("myTable");
+                  tr = table.getElementsByTagName("tr");
+                
+                  // Loop through all table rows, and hide those who don't match the search query
+                  for (i = 0; i < tr.length - 1; i++) {
+                    td = tr[i].getElementsByTagName("td")[0];
+                    if (td) {
+                      txtValue = td.textContent || td.innerText;
+                      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                      } else {
+                        tr[i].style.display = "none";
+                      }
+                    }
+                  }
+                }
+                </script>
             </div>
     </div>
       <!-- Footer -->

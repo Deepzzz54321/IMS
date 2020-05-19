@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="author" content="Creative Tim">
-  <title>Unmet Requirements - Head</title>
+  <title>Unmet Requirements - Incharge</title>
   {% load static %}
   <!-- Favicon -->
   <link rel="icon" href=" {% static 'institute/assets/img/brand/favicon.png' %}" type="image/png">
@@ -111,7 +111,7 @@
 
           <!-- Welcome Message -->
           <div class="d-md-inline-block d-none text-white ml-3">
-            Hello <span class="text-white font-weight-bolder">{{user.name}}</span>, {{user.designation}} of {{user.branch}}
+            Hello <span class="text-white font-weight-bolder">{{user.name}}</span>, {{user.designation}} of {{room.name}}
           </div>
           <ul class="navbar-nav align-items-center  ml-auto">
             <li class="nav-item dropdown">
@@ -150,7 +150,7 @@
     <div class="container-fluid mt--5">
       <div class="card bg">
             <div class="card-header border-0">
-              <h3 class="mb-0">Unmet Requirements</h3>
+              <h3 class="mb-0">Unmet Requirements {% if room %} of {{room.name}} {% endif %}</h3>
             </div>
             <div class="table-responsive">
               <!-- Projects table -->
@@ -162,12 +162,9 @@
                     <th scope="col">Product Type</th>
                     <th scope="col">Product Specification</th>
                     <th scope="col">Product Count</th>
-                    <th scope="col">Product In Stock</th>
-                    <th scope="col">Allot/Request</th>
                   </tr>
                 </thead>
                 <tbody>
-                <form action=" {% url 'institute:unmet_require' %} " method="post">
                   {% for item in unmet_requirements %}
                     <tr>
                       <td>{{item.room_id}} </td>
@@ -175,15 +172,7 @@
                       <td>{{item.product_type}} </td>
                       <td>{{item.product_spec}} </td>
                       <td>{{item.product_count}} </td>
-                      <td>{{item.stock_count}} </td>
-                      
-                      {% if item.stock_count == 0 %}
-                        <td> Request: <input type="radio" name="R{{item.require_id}}" id="R{{item.require_id}}" value="request" ondblclick="this.checked = false"> </td>
-                        
-                      {% else %}
-                        <td> Allot: <input type="radio" name="A{{item.require_id}}" id="A{{item.require_id}}" value="allot" ondblclick="this.checked = false"> </td>
-                      {% endif %}
-                    </tr>
+
                     
                     {% empty %}
                     <tr>
@@ -193,16 +182,7 @@
                     </tr>
                     
                     {% endfor %}
-                    
-                    {% if unmet_requirements|length > 0 %}
-                      <tr>
-                        <td colspan="7" class="text-md-center">
-                          <input type="submit" value="Submit" class="btn btn-primary">
-                        </td>
-                      </tr>
-                    {% endif %}
-                   
-                </form>        
+       
                 </tbody>
               </table>
             </div>

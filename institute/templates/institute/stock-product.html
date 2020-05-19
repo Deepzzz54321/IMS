@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="author" content="Creative Tim">
-  <title>Unmet Requirements - Head</title>
+  <title>Stock Products</title>
   {% load static %}
   <!-- Favicon -->
   <link rel="icon" href=" {% static 'institute/assets/img/brand/favicon.png' %}" type="image/png">
@@ -41,15 +41,15 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link active" href="{% url 'institute:unmet_require' %}">
+              <a class="nav-link" href="{% url 'institute:unmet_require' %}">
                 <i class="ni ni-planet text-orange"></i>
                 <span class="nav-link-text">Unmet Requirements</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link " href="{% url 'institute:maintainence' %}">
+              <a class="nav-link" href="{% url 'institute:maintainence' %}">
                 <i class="ni ni-settings text-info"></i>
-                <span class="nav-link-text">Maintainence Products</span>
+                <span class="nav-link-text">Maintenance Products</span>
               </a>
             </li>
             <li class="nav-item">
@@ -65,7 +65,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'institute:stock' %}">
+              <a class="nav-link active" href="{% url 'institute:stock' %}">
                 <i class="fas fa-warehouse text-green"></i>
                 <span class="nav-link-text">Stock Products</span>
               </a>
@@ -82,7 +82,7 @@
                 <span class="nav-link-text">Tables</span>
               </a>
             </li>
-
+          </ul>
 
 
         </div>
@@ -111,7 +111,7 @@
 
           <!-- Welcome Message -->
           <div class="d-md-inline-block d-none text-white ml-3">
-            Hello <span class="text-white font-weight-bolder">{{user.name}}</span>, {{user.designation}} of {{user.branch}}
+            Hello <span class="text-white font-weight-bolder">{{user.name}}</span>, {{user.designation}} of {% if room %} {{room.name}} {% else %} {{user.branch}}{% endif %}
           </div>
           <ul class="navbar-nav align-items-center  ml-auto">
             <li class="nav-item dropdown">
@@ -145,64 +145,41 @@
       </div>
     </nav>
 
-
     <!-- Page content -->
     <div class="container-fluid mt--5">
       <div class="card bg">
             <div class="card-header border-0">
-              <h3 class="mb-0">Unmet Requirements</h3>
+              <h3 class="mb-0">Stock Products of {{user.branch}}</h3>
             </div>
             <div class="table-responsive">
               <!-- Projects table -->
               <table class="table align-items-center table-flush">
                 <thead class="thead-light">
                   <tr>
-                    <th scope="col">Room ID</th>
-                    <th scope="col">Room Name</th>
+                    <th scope="col">Product ID</th>
+                    <th scope="col">Product Name</th>
                     <th scope="col">Product Type</th>
                     <th scope="col">Product Specification</th>
-                    <th scope="col">Product Count</th>
-                    <th scope="col">Product In Stock</th>
-                    <th scope="col">Allot/Request</th>
+                    <th scope="col">Product Status</th>
+                    
                   </tr>
                 </thead>
                 <tbody>
-                <form action=" {% url 'institute:unmet_require' %} " method="post">
-                  {% for item in unmet_requirements %}
+                  
+                  {% for item in product_det %}
                     <tr>
-                      <td>{{item.room_id}} </td>
-                      <td>{{item.room_name}} </td>
-                      <td>{{item.product_type}} </td>
-                      <td>{{item.product_spec}} </td>
-                      <td>{{item.product_count}} </td>
-                      <td>{{item.stock_count}} </td>
-                      
-                      {% if item.stock_count == 0 %}
-                        <td> Request: <input type="radio" name="R{{item.require_id}}" id="R{{item.require_id}}" value="request" ondblclick="this.checked = false"> </td>
-                        
-                      {% else %}
-                        <td> Allot: <input type="radio" name="A{{item.require_id}}" id="A{{item.require_id}}" value="allot" ondblclick="this.checked = false"> </td>
-                      {% endif %}
+                      <td>{{item.prod_id}} </td>
+                      <td>{{item.name}} </td>
+                      <td>{{item.type}} </td>
+                      <td>{{item.specs}} </td>
+                      <td>{{item.status}}</td>
+ 
                     </tr>
                     
-                    {% empty %}
-                    <tr>
-                      <td colspan="7" class="text-md-center text-warning">
-                        Yay! All room requirements have been satisfied.
-                      </td>
-                    </tr>
+                  {% empty %}
                     
-                    {% endfor %}
+                  {% endfor %}
                     
-                    {% if unmet_requirements|length > 0 %}
-                      <tr>
-                        <td colspan="7" class="text-md-center">
-                          <input type="submit" value="Submit" class="btn btn-primary">
-                        </td>
-                      </tr>
-                    {% endif %}
-                   
-                </form>        
                 </tbody>
               </table>
             </div>

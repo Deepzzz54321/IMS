@@ -66,7 +66,7 @@ class Employees(models.Model):
     name = models.CharField(max_length=100, null=False)
     branch = models.CharField(max_length=100,choices=BRANCH, null=False)
     designation = models.CharField(max_length=100, null=False)
-    room_id = models.ForeignKey(Rooms,on_delete=models.CASCADE, null=True, blank=True)
+    room = models.ForeignKey(Rooms,on_delete=models.CASCADE, null=True, blank=True)
     phone = models.CharField(max_length=10,null=False)
     email_id = models.CharField(max_length=50, null=False)
 
@@ -112,7 +112,7 @@ class Products(models.Model):
     type = models.CharField(max_length=20, null=False)
     status = models.CharField(max_length=15,null=False, choices=STATUS, default='Usable')
     branch = models.CharField(max_length=100,choices=BRANCH, null=True,blank=True)
-    room_id = models.ForeignKey(Rooms,on_delete=models.CASCADE, null=True, blank=True)
+    room = models.ForeignKey(Rooms,on_delete=models.CASCADE, null=True, blank=True)
     specs = models.TextField(null=True, blank=True)
     update = models.TextField(null=True, blank=True)
 
@@ -155,6 +155,7 @@ class Requests(models.Model):
     )
 
     branch = models.CharField(max_length=100,choices=BRANCH, null=False)
+    room = models.ForeignKey(Rooms,on_delete=models.CASCADE, null=True, blank=True)
     type = type = models.CharField(max_length=20, null=False)
     specs = models.TextField(null=True, blank=True)
     count = models.IntegerField(null=False)

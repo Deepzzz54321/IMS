@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="author" content="Creative Tim">
-  <title>Unmet Requirements - Head</title>
+  <title>Maintenance</title>
   {% load static %}
   <!-- Favicon -->
   <link rel="icon" href=" {% static 'institute/assets/img/brand/favicon.png' %}" type="image/png">
@@ -35,21 +35,21 @@
           <!-- Nav items -->
           <ul class="navbar-nav">
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'institute:official_home' %}">
+              <a class="nav-link " href="{% url 'institute:official_home' %}">
                 <i class="ni ni-tv-2 text-primary"></i>
                 <span class="nav-link-text">Dashboard</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link active" href="{% url 'institute:unmet_require' %}">
+              <a class="nav-link" href="{% url 'institute:unmet_require' %}">
                 <i class="ni ni-planet text-orange"></i>
                 <span class="nav-link-text">Unmet Requirements</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link " href="{% url 'institute:maintainence' %}">
+              <a class="nav-link" href="{% url 'institute:maintainence' %}">
                 <i class="ni ni-settings text-info"></i>
-                <span class="nav-link-text">Maintainence Products</span>
+                <span class="nav-link-text">Maintenance Products</span>
               </a>
             </li>
             <li class="nav-item">
@@ -82,7 +82,7 @@
                 <span class="nav-link-text">Tables</span>
               </a>
             </li>
-
+          </ul>
 
 
         </div>
@@ -111,7 +111,7 @@
 
           <!-- Welcome Message -->
           <div class="d-md-inline-block d-none text-white ml-3">
-            Hello <span class="text-white font-weight-bolder">{{user.name}}</span>, {{user.designation}} of {{user.branch}}
+            Hello <span class="text-white font-weight-bolder">{{item.name}}</span>, {{item.designation}} of {% if room %} {{room.name}} {% else %} {{item.branch}}{% endif %}
           </div>
           <ul class="navbar-nav align-items-center  ml-auto">
             <li class="nav-item dropdown">
@@ -121,7 +121,7 @@
                     <img alt="Image placeholder" src="{% static 'institute/assets/img/theme/team-4.jpg' %}">
                   </span>
                   <div class="media-body  ml-2  d-none d-lg-block">
-                    <span class="mb-0 text-sm  font-weight-bold">{{user.name}}</span>
+                    <span class="mb-0 text-sm  font-weight-bold">{{item.name}}</span>
                   </div>
                 </div>
               </a>
@@ -133,6 +133,7 @@
                   <i class="ni ni-single-02"></i>
                   <span>My profile</span>
                 </a>
+                
                 <div class="dropdown-divider"></div>
                 <a href="{% url 'authenticate:login' %}" class="dropdown-item">
                   <i class="ni ni-user-run"></i>
@@ -145,64 +146,49 @@
       </div>
     </nav>
 
-
     <!-- Page content -->
     <div class="container-fluid mt--5">
       <div class="card bg">
             <div class="card-header border-0">
-              <h3 class="mb-0">Unmet Requirements</h3>
+              <h3 class="mb-0">Profile View</h3>
             </div>
             <div class="table-responsive">
               <!-- Projects table -->
               <table class="table align-items-center table-flush">
-                <thead class="thead-light">
-                  <tr>
-                    <th scope="col">Room ID</th>
-                    <th scope="col">Room Name</th>
-                    <th scope="col">Product Type</th>
-                    <th scope="col">Product Specification</th>
-                    <th scope="col">Product Count</th>
-                    <th scope="col">Product In Stock</th>
-                    <th scope="col">Allot/Request</th>
-                  </tr>
-                </thead>
                 <tbody>
-                <form action=" {% url 'institute:unmet_require' %} " method="post">
-                  {% for item in unmet_requirements %}
+                  
                     <tr>
-                      <td>{{item.room_id}} </td>
-                      <td>{{item.room_name}} </td>
-                      <td>{{item.product_type}} </td>
-                      <td>{{item.product_spec}} </td>
-                      <td>{{item.product_count}} </td>
-                      <td>{{item.stock_count}} </td>
-                      
-                      {% if item.stock_count == 0 %}
-                        <td> Request: <input type="radio" name="R{{item.require_id}}" id="R{{item.require_id}}" value="request" ondblclick="this.checked = false"> </td>
-                        
-                      {% else %}
-                        <td> Allot: <input type="radio" name="A{{item.require_id}}" id="A{{item.require_id}}" value="allot" ondblclick="this.checked = false"> </td>
-                      {% endif %}
+                      <th>Employee ID</td>
+                      <td>{{item.emp_id}}</td>
+                    </tr>
+                    <tr>
+                      <th>Name</td>
+                      <td>{{item.name}}</td>
+                    </tr>
+                    <tr>
+                      <th>Branch</td>
+                      <td>{{item.branch}}</td>
+                    </tr>
+                    <tr>
+                      <th>Designation</td>
+                      <td>{{item.designation}}</td>
                     </tr>
                     
-                    {% empty %}
+                    {% if item.room_id %}
                     <tr>
-                      <td colspan="7" class="text-md-center text-warning">
-                        Yay! All room requirements have been satisfied.
-                      </td>
+                      <th>Room under supervision</td>
+                      <td>{{item.room_id}}</td>
                     </tr>
-                    
-                    {% endfor %}
-                    
-                    {% if unmet_requirements|length > 0 %}
-                      <tr>
-                        <td colspan="7" class="text-md-center">
-                          <input type="submit" value="Submit" class="btn btn-primary">
-                        </td>
-                      </tr>
                     {% endif %}
-                   
-                </form>        
+                      
+                    <tr>
+                      <th>Phone</td>
+                      <td>{{item.phone}}</td>
+                    </tr>
+                    <tr>
+                      <th>Email ID</td>
+                      <td>{{item.email_id}}</td>
+                    </tr>
                 </tbody>
               </table>
             </div>
