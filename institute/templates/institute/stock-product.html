@@ -82,6 +82,15 @@
                 <span class="nav-link-text">Tables</span>
               </a>
             </li>
+
+            {% if user.designation == 'HOD' or user.designation == 'HOS' or user.designation == 'Head' or user.designation == 'Chief Warden' or user.designation == 'Deputy Chief Warden' %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'institute:register' %}">
+                <i class="ni ni-single-02 text-yellow"></i>
+                <span class="nav-link-text">Add Employee</span>
+              </a>
+            </li>
+            {% endif %}
           </ul>
 
 

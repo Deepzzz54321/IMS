@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="author" content="Creative Tim">
-  <title>Unmet Requirements - Incharge</title>
+  <title>Employee Registration</title>
   {% load static %}
   <!-- Favicon -->
   <link rel="icon" href=" {% static 'institute/assets/img/brand/favicon.png' %}" type="image/png">
@@ -17,6 +17,25 @@
   <!-- Page plugins -->
   <!-- Argon CSS -->
   <link rel="stylesheet" href="{% static 'institute/assets/css/argon.css' %}" type="text/css">
+
+  <style>
+  input:focus{
+    outline: 0 0 0 0  !important;
+    box-shadow: 0 0 0 0 !important;}
+    .btn-success {
+    height: 3em;
+    padding: 10px;
+    transition: 0.3s;
+    border: none;
+    border-radius: 10%;
+}
+.btn-danger {
+    height: 3em;
+    padding: 10px;
+    transition: 0.3s;
+    border: none;
+    border-radius: 10%;
+}</style>
 </head>
 
 <body>
@@ -41,13 +60,13 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link active" href="{% url 'institute:unmet_require' %}">
+              <a class="nav-link" href="{% url 'institute:unmet_require' %}">
                 <i class="ni ni-planet text-orange"></i>
                 <span class="nav-link-text">Unmet Requirements</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link " href="{% url 'institute:maintainence' %}">
+              <a class="nav-link" href="{% url 'institute:maintainence' %}">
                 <i class="ni ni-settings text-info"></i>
                 <span class="nav-link-text">Maintenance Products</span>
               </a>
@@ -82,7 +101,13 @@
                 <span class="nav-link-text">Tables</span>
               </a>
             </li>
-
+            <li class="nav-item">
+              <a class="nav-link active" href="{% url 'institute:register' %}">
+                <i class="ni ni-single-02 text-yellow"></i>
+                <span class="nav-link-text">Add Employee</span>
+              </a>
+            </li>
+          </ul>
 
 
         </div>
@@ -111,7 +136,7 @@
 
           <!-- Welcome Message -->
           <div class="d-md-inline-block d-none text-white ml-3">
-            Hello <span class="text-white font-weight-bolder">{{user.name}}</span>, {{user.designation}} of {{room.name}}
+            Hello <span class="text-white font-weight-bolder">{{user.name}}</span>, {{user.designation}} of {{user.branch}}
           </div>
           <ul class="navbar-nav align-items-center  ml-auto">
             <li class="nav-item dropdown">
@@ -129,12 +154,12 @@
                 <div class="dropdown-header noti-title">
                   <h6 class="text-overflow m-0">Welcome!</h6>
                 </div>
-                <a href="{% url 'institute:profile' %}" class="dropdown-item">
+                <a href="#!" class="dropdown-item">
                   <i class="ni ni-single-02"></i>
                   <span>My profile</span>
                 </a>
                 <div class="dropdown-divider"></div>
-                <a href="{% url 'authenticate:login' %}" class="dropdown-item">
+                <a href="#!" class="dropdown-item">
                   <i class="ni ni-user-run"></i>
                   <span>Logout</span>
                 </a>
@@ -150,40 +175,68 @@
     <div class="container-fluid mt--5">
       <div class="card bg">
             <div class="card-header border-0">
-              <h3 class="mb-0">Unmet Requirements {% if room %} of {{room.name}} {% endif %}</h3>
+              <h3 class="mb-0">Employee Registration</h3>
             </div>
             <div class="table-responsive">
               <!-- Projects table -->
               <table class="table align-items-center table-flush">
                 <thead class="thead-light">
                   <tr>
-                    <th scope="col">Room ID</th>
-                    <th scope="col">Room Name</th>
-                    <th scope="col">Product Type</th>
-                    <th scope="col">Product Specification</th>
-                    <th scope="col">Product Count</th>
+                 
                   </tr>
                 </thead>
+                <form  action="{% url 'institute:register' %}" method="POST">
+                          {% csrf_token %}
+                              
+                              {% if messages %}
+                                   
+                                   {% for message in messages %}
+                                        <script>  alert({{message}}); </script>
+                                   {% endfor %}
+                                        
+                              {% endif %}
                 <tbody>
-                  {% for item in unmet_requirements %}
+                  
                     <tr>
-                      <td>{{item.room_id}} </td>
-                      <td>{{item.room_name}} </td>
-                      <td>{{item.product_type}} </td>
-                      <td>{{item.product_spec}} </td>
-                      <td>{{item.product_count}} </td>
+                      <th>Employee ID</td>
+   
+                      <td>  <input type="text" class="form-control" name="empid" title="Employee ID" id="empid" placeholder="Employee ID" required></td>
 
-                    
-                    {% empty %}
+                    </tr>
                     <tr>
-                      <td colspan="7" class="text-md-center text-warning">
-                        Yay! All room requirements have been satisfied.
-                      </td>
+                      <th>Name</td>
+
+                      <td>  <input type="text" class="form-control" name="name" title="Employee name" id="name" placeholder="Name" required></td>
+
+                    </tr>
+                    <tr>
+                      <th>Designation</td>
+                      <td>  <input type="text" class="form-control" name="desig" title="Designation" id="desig" placeholder="Designation" required></td>
+                    </tr>
+                    <tr>
+                      <th>Room ID</td>
+                      <td>  <input type="text" class="form-control" name="roomid" title="Room ID" id="roomid" placeholder="Room ID" ></td>
+                    </tr>
+                    <tr>
+                      <th>Phone Number</td>
+                      <td> <input type="text" class="form-control" name="ph" title="Phone" id="ph" placeholder="Phone no" pattern="[0-9]{10}" required></td>
+
+                    </tr>
+                     <tr>
+                      <th>Email ID</td>
+                      <td>  <input type="text" class="form-control" name="emailid" title="Email ID" id="emailid" placeholder="Email ID" ></td>
+                    </tr>
+                    <tr>
+                      <td  style="text-align: center;"><a href="{% url 'institute:official_home' %}"><input name="submit" type="submit" class="btn-success"></td>
+                      <td  style="text-align: center;"><a href="{% url 'institute:official_home' %}"><input type="submit" class="btn-danger" value="Cancel"></td>
                     </tr>
                     
-                    {% endfor %}
-       
+                    
+                 
+                 
+                    
                 </tbody>
+                </form>
               </table>
             </div>
     </div>

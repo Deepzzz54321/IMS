@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="author" content="Creative Tim">
-  <title>Maintenance Products</title>
+  <title>Products - Inventory Section</title>
   {% load static %}
   <!-- Favicon -->
   <link rel="icon" href=" {% static 'institute/assets/img/brand/favicon.png' %}" type="image/png">
@@ -35,31 +35,31 @@
           <!-- Nav items -->
           <ul class="navbar-nav">
             <li class="nav-item">
-              <a class="nav-link " href="{% url 'institute:official_home' %}">
+              <a class="nav-link" href="{% url 'institute:inven_home' %}">
                 <i class="ni ni-tv-2 text-primary"></i>
                 <span class="nav-link-text">Dashboard</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'institute:unmet_require' %}">
+              <a class="nav-link" href="{% url 'institute:inven_requests' %}">
                 <i class="ni ni-planet text-orange"></i>
-                <span class="nav-link-text">Unmet Requirements</span>
+                <span class="nav-link-text">Requests</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link active" href="{% url 'institute:maintainence' %}">
+              <a class="nav-link" href="{% url 'institute:maintainence' %}">
                 <i class="ni ni-settings text-info"></i>
                 <span class="nav-link-text">Maintenance Products</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link " href="{% url 'institute:unusable' %}">
+              <a class="nav-link" href="{% url 'institute:unusable' %}">
                 <i class="ni ni-fat-remove text-orange"></i>
                 <span class="nav-link-text">Unusable Products</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'institute:products' %}">
+              <a class="nav-link active" href="{% url 'institute:products' %}">
                 <i class="fas fa-list text-primary"></i>
                 <span class="nav-link-text">Products</span>
               </a>
@@ -82,16 +82,6 @@
                 <span class="nav-link-text">Tables</span>
               </a>
             </li>
-            
-            {% if user.designation == 'HOD' or user.designation == 'HOS' or user.designation == 'Head' or user.designation == 'Chief Warden' or user.designation == 'Deputy Chief Warden' %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'institute:register' %}">
-                <i class="ni ni-single-02 text-yellow"></i>
-                <span class="nav-link-text">Add Employee</span>
-              </a>
-            </li>
-            {% endif %}
-        
           </ul>
 
 
@@ -159,40 +149,176 @@
     <div class="container-fluid mt--5">
       <div class="card bg">
             <div class="card-header border-0">
-              <h3 class="mb-0">Maintenance Products {% if room %} of {{room.name}} {% endif %}</h3>
+              <div class="row">
+                <div class="col">
+                <h3 class="mb-0">Products {% if room %} of {{room.name}} {% endif %}</h3>
+                </div>
+                <div class="col d-flex justify-content-end">
+                <div class="form-group mb-0  ">
+                  <div class="input-group input-group-alternative input-group-merge ">
+                    <div class="input-group-prepend ">
+                      <span class="input-group-text bg-default text-info"><i class="fas fa-search"></i></span>
+                    </div>
+                    <input class="form-control bg-default text-info" type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for Products...">
+                  </div>
+                </div>
+                </div>
+              </div>
             </div>
             <div class="table-responsive">
               <!-- Projects table -->
-              <table class="table align-items-center table-flush">
+              <table class="table align-items-center table-flush" id="myTable">
                 <thead class="thead-light">
                   <tr>
-                    <th scope="col">Room ID</th>
-                    <th scope="col">Product ID</th>
-                    <th scope="col">Product Name</th>
-                    <th scope="col">Product Type</th>
-                    <th scope="col">Product Specification</th>
-                    
-                    
+                    <th scope="col">ID</th>
+                    <th scope="col">Branch/Section/Hostel</th>
+                    <th scope="col">Room</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Specification</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Maintenance History</th>
                   </tr>
                 </thead>
                 <tbody>
-                  
+                  <form action="{% url 'institute:products' %}" method="post">
                   {% for item in product_det %}
                     <tr>
-                      <td>{{item.room_id}}</td>
                       <td>{{item.prod_id}} </td>
+                      <td>
+                        <select name="B{{item.prod_id}}" id="B{{item.prod_id}}" onchange="getRooms(this, value)">
+                          <option id="B{{item.prod_id}}None">None</option>
+                          {% for branch  in branch_list %}
+                          <option id="B{{item.prod_id}}{{branch}}" value="{{branch}}">{{branch}}</option>
+                          {% endfor %}
+
+                          <script>
+                            var value = "{{item.branch}}"
+  
+                            options_org = document.getElementById('B{{item.prod_id}}').children
+                            options = Array.from(options_org)
+  
+                            var select_element = options.find( (x)=> { return x.innerText == value } )
+                            select_element.selected = true
+  
+                          </script>
+                            
+                        </select>
+                      </td>
+                      <td>
+                        <select name="R{{item.prod_id}}" id="R{{item.prod_id}}">
+                          <option id="R{{item.prod_id}}None">None</option>
+                          
+                          {% for room  in room_list %}
+                            
+                            {% if room.branch == item.branch %}
+                            <option id="R{{item.prod_id}}{{room}}" value="{{room}}">{{room.name}}</option>
+                            {% endif %}
+    
+                          {% endfor %}
+
+                          <script>
+                            var value = "{{item.room.name}}"
+  
+                            options_org = document.getElementById('R{{item.prod_id}}').children
+                            options = Array.from(options_org)
+  
+                            var select_element = options.find( (x)=> { return x.innerText == value } )
+                            select_element.selected = true
+
+                            function getRooms(element, value) {   
+
+                              var branch = element;
+                              var id = element.id.slice(1);
+                              var rooms = document.getElementById("R"+id);
+                              
+                              rooms.textContent = '';
+                              let newInner = '<option id="R'+id+'None">None</option>';
+                              {% for room  in room_list %}
+                                var room_branch = "{{room.branch}}"
+                                if(value == room_branch){
+                                  newInner += '<option id="R'+id+'{{room}}" value="{{room}}">{{room.name}}</option>'
+                                }
+                              {% endfor %}
+
+                              rooms.innerHTML = newInner
+                            }
+  
+                          </script>
+                            
+                        </select> 
+                      </td>
                       <td>{{item.name}} </td>
                       <td>{{item.type}} </td>
                       <td>{{item.specs}} </td>
- 
+                      <td>
+                      <select name="S{{item.prod_id}}" id="S{{item.prod_id}}" onchange="getAlert(value)">
+                          <option id="S{{item.prod_id}}S1" value="Usable">Usable</option>
+                          <option id="S{{item.prod_id}}S2" value="Maintenance">Maintenance</option>
+                          <option id="S{{item.prod_id}}S3" value="Unusable">Unusable</option>
+                          <option id="S{{item.prod_id}}S3" value="Delete" >Delete</option>
+                        </select>
+                      
+                        <script>
+                          function getAlert(value){
+                            if(value == 'Delete'){
+                              alert('Are you sure you want to delete {{item.prod_id}} {{item.name}} ?')
+                            }
+                          }
+                          var value = "{{item.status}}"
+
+                          options_org = document.getElementById('S{{item.prod_id}}').children
+                          options = Array.from(options_org)
+
+                          var select_element = options.find( (x)=> { return x.innerText == value } )
+                          select_element.selected = true
+
+                        </script>
+                      </td>
+                      <td>{{item.update|linebreaksbr}}</td>
                     </tr>
                     
                   {% empty %}
+                    <tr>
+                      <td colspan="12" class="text-center text-warning">The Department has not been alloted any items</td>
+                    </tr>
                     
                   {% endfor %}
-                    
+                  {% if product_det|length > 0 %}
+                  <tr>
+                    <td colspan="12" class="text-md-center">
+                      <input type="submit" value="Submit" class="btn btn-primary">
+                    </td>
+                  </tr>
+                  {% endif %}
+                  </form>   
                 </tbody>
               </table>
+
+              <script>
+                function myFunction() {
+                  // Declare variables                  
+                  var input, filter, table, tr, td, i, txtValue;
+                  input = document.getElementById("myInput");
+                  filter = input.value.toUpperCase();
+                  table = document.getElementById("myTable");
+                  tr = table.getElementsByTagName("tr");
+                  
+                  // Loop through all table rows, and hide those who don't match the search query
+                  for (i = 0; i < tr.length - 1; i++) {
+                    td = tr[i].getElementsByTagName("td")[0];                    
+                    if (td) {
+                      txtValue = td.textContent || td.innerText;
+                      
+                      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                      } else {
+                        tr[i].style.display = "none";
+                      }
+                    }
+                  }
+                }
+                </script>
             </div>
     </div>
       <!-- Footer -->

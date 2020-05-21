@@ -30,9 +30,12 @@ class Rooms(models.Model):
     )
 
     room_id = models.CharField(primary_key=True, max_length=15, null=False)
-    name = models.CharField(max_length=50, null=False)
+    name = models.CharField(max_length=50, unique=True, null=False)
     requirements = models.TextField(null=True, blank=True)
     branch = models.CharField(max_length=100,choices=BRANCH, null=False)
+
+    def __str__(self):
+        return str(self.room_id)
 
 class Employees(models.Model):
     BRANCH = (
@@ -107,6 +110,18 @@ class Products(models.Model):
 
     )
 
+    KIND = (
+        ('Computer Accessories','Computer Accessories'),
+        ('Eletronics','Electronics'),
+        ('Stationary','Stationary'),
+        ('Sports','Sports'),
+        ('Groceries','Groceries'),
+        ('Chemicals','Chemicals'),
+        ('Lavatory Products','Lavatory Products'),
+        ('Lab Hardwares','Lab Hardwares'),
+        ('Furnitures','Furnitures'),
+    )
+
     prod_id = models.CharField(primary_key=True, max_length=15, null=False)
     name = models.CharField(max_length=30, null=False)
     type = models.CharField(max_length=20, null=False)
@@ -114,6 +129,7 @@ class Products(models.Model):
     branch = models.CharField(max_length=100,choices=BRANCH, null=True,blank=True)
     room = models.ForeignKey(Rooms,on_delete=models.CASCADE, null=True, blank=True)
     specs = models.TextField(null=True, blank=True)
+    kind = models.CharField(max_length=50, null=False, choices=KIND)
     update = models.TextField(null=True, blank=True)
 
     def __str__(self):
@@ -151,13 +167,56 @@ class Requests(models.Model):
 
     STATUS=(
         ('Pending','Pending'),
+        ('In Cart', 'In Cart'),
         ('Resolved','Resolved'),
+    )
+
+    KIND = (
+        ('Computer Accessories','Computer Accessories'),
+        ('Eletronics','Electronics'),
+        ('Stationary','Stationary'),
+        ('Sports','Sports'),
+        ('Groceries','Groceries'),
+        ('Chemicals','Chemicals'),
+        ('Lavatory Products','Lavatory Products'),
+        ('Lab Hardwares','Lab Hardwares'),
+        ('Furnitures','Furnitures'),
     )
 
     branch = models.CharField(max_length=100,choices=BRANCH, null=False)
     room = models.ForeignKey(Rooms,on_delete=models.CASCADE, null=True, blank=True)
     type = type = models.CharField(max_length=20, null=False)
     specs = models.TextField(null=True, blank=True)
+    kind = models.CharField(max_length=50, null=False, choices=KIND)
     count = models.IntegerField(null=False)
     status = models.CharField(max_length=20,choices=STATUS,null=False,default='Pending')
+
+
+class Cart(models.Model):
+
+    STATUS=(
+        ('To Buy','To Buy'),
+        ('Processing','Processing'),
+        ('Bought','Bought'),
+    )
+
+    KIND = (
+        ('Computer Accessories','Computer Accessories'),
+        ('Eletronics','Electronics'),
+        ('Stationary','Stationary'),
+        ('Sports','Sports'),
+        ('Groceries','Groceries'),
+        ('Chemicals','Chemicals'),
+        ('Lavatory Products','Lavatory Products'),
+        ('Lab Hardwares','Lab Hardwares'),
+        ('Furnitures','Furnitures'),
+    )
+
+    type = type = models.CharField(max_length=20, null=False)
+    specs = models.TextField(null=True, blank=True)
+    kind = models.CharField(max_length=50, null=False, choices=KIND)
+    count = models.IntegerField(null=False)
+    status = models.CharField(max_length=20,choices=STATUS,null=False,default='To Buy')
+
+
 

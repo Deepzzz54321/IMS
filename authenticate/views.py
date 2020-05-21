@@ -21,9 +21,14 @@ def login(request):
         user = request.POST["username"]
         password1 = request.POST["password"]
         if credentials.objects.filter(emp_id=user, password=password1).exists():
-            response = redirect('institute:official_home')
-            response.set_cookie('username',user)
-            return response       
+            if Employees.objects.filter(emp_id=user, branch='Inventory Section', designation='Head').exists() or Employees.objects.filter(emp_id=user, branch='Inventory Section', designation='Admin').exists():
+                response = redirect('institute:inven_home')
+                response.set_cookie('username',user)
+                return response
+            else:
+                response = redirect('institute:official_home')
+                response.set_cookie('username',user)
+                return response  
 
         else:
             messages.error(request, 'Invalid Username or Password')
